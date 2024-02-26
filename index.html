@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/png" href="/2/favicon.ico">
+<title>Calculator!</title>
+
+<style>
+  /* Add your CSS styles here */
+
+  body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0;
+  }
+
+  .calculator {
+    background-color: #333;
+    color: white;
+    max-width: 200px;
+    padding: 10px;
+    border-radius: 10px;
+    margin: auto;
+  }
+  .calculator-screen {
+    width: 95%;
+    height: 50px;
+    border: none;
+    background-color: #252525;
+    color: white;
+    text-align: right;
+    padding-right: 10px;
+    font-size: 18px;
+  }
+  .button {
+    width: calc(33.333% - 6px);
+    height: 50px;
+    background-color: #4d4d4d;
+    border: 1px solid #4d4d4d;
+    color: white;
+    font-size: 20px;
+    margin: 3px;
+    cursor: pointer;
+  }
+  .button:active {
+    background-color: #666;
+  }
+  .button-row {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .button.double {
+    width: calc(100%);
+  }
+</style>
+</head>
+<body>
+
+    <div class="calculator">
+        <input type="text" class="calculator-screen" value="" disabled>
+        
+        <div class="button-row">
+          <button class="button">7</button>
+          <button class="button">8</button>
+          <button class="button">9</button>
+          <button class="button">÷</button>
+
+        </div>
+        
+        <div class="button-row">
+          <button class="button">4</button>
+          <button class="button">5</button>
+          <button class="button">6</button>
+          <button class="button">-</button>
+        </div>
+        
+        <div class="button-row">
+          <button class="button">1</button>
+          <button class="button">2</button>
+          <button class="button">3</button>
+          <button class="button">x</button>
+        </div>
+        
+        <div class="button-row">
+          <button class="button">0</button>
+          <button class="button">.</button>
+          <button class="button">=</button>
+          <button class="button">+</button>
+
+        </div>
+        
+        <div class="button-row">
+          <button class="button double">C</button>
+          
+        </div>
+      </div>
+
+      <script>
+        // Get all the buttons from the document
+        const buttons = document.querySelectorAll('.button');
+        const screen = document.querySelector('.calculator-screen');
+        
+        // Initialize a variable to store the current input and another for the previous input
+        let currentInput = '';
+        let previousInput = '';
+        let operation = null;
+        
+        // Function to update the screen with the current input
+        function updateScreen() {
+          screen.value = currentInput;
+        }
+        
+        // Function to handle number and dot button clicks
+        function appendNumber(number) {
+          // Check if dot is already included in the current input
+          if (number === '.' && currentInput.includes('.')) return;
+          currentInput += number;
+        }
+        
+        // Function to handle operator button clicks
+        function chooseOperation(op) {
+          if (currentInput === '') return;
+          if (previousInput !== '') {
+            compute();
+          }
+          operation = op === 'x' ? '*' : op === '÷' ? '/' : op;
+          previousInput = currentInput;
+          currentInput = '';
+        }
+        
+        // Function to clear the screen
+        function clearScreen() {
+          currentInput = '';
+          previousInput = '';
+          operation = null;
+        }
+        
+        // Function to compute the result
+        function compute() {
+          let computation;
+          const prev = parseFloat(previousInput);
+          const current = parseFloat(currentInput);
+          if (isNaN(prev) || isNaN(current)) return;
+          
+          switch (operation) {
+            case '+':
+              computation = prev + current;
+              break;
+            case '-':
+              computation = prev - current;
+              break;
+            case '*':
+              computation = prev * current;
+              break;
+            case '/':
+              if (current === 0) {
+                alert("You can't divide by zero!");
+                return;
+              }
+              computation = prev / current;
+              break;
+            default:
+              return;
+          }
+          
+          currentInput = computation.toString();
+          operation = undefined;
+          previousInput = '';
+        }
+        
+        // Add event listeners to each button
+        buttons.forEach(button => {
+          button.addEventListener('click', () => {
+            if (button.innerText >= '0' && button.innerText <= '9' || button.innerText === '.') {
+              appendNumber(button.innerText);
+            } else if (button.innerText === 'C') {
+              clearScreen();
+            } else if (button.innerText === '=') {
+              compute();
+            } else {
+              chooseOperation(button.innerText);
+            }
+            updateScreen();
+          });
+        });
+        
+        </script>
+
+</body>
+</html>
